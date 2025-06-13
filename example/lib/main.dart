@@ -38,19 +38,22 @@ class _ExampleUsageState extends State<ExampleUsage> {
 
   Future<void> _showPickerAboveButton() async {
     final DateTime? result = await showMonthYearPicker(
-        context: context,
-        buttonKey: _buttonKey,
-        initialMonth: _selectedDate?.month,
-        allowFutureDate: false,
-        initialYear: _selectedDate?.year,
-        minYear: 1920,
-        maxYear: 2025);
+      context: context,
+      buttonKey: _buttonKey,
+      initialMonth: _selectedDate?.month,
+      allowFutureDate: false,
+      initialYear: _selectedDate?.year,
+      minYear: 1920,
+      maxYear: 2025,
+      onDateChanged: (p0) => {
+        log(p0.toString()),
+      },
+    );
 
     if (result != null) {
       setState(() {
         _selectedDate = result;
       });
-      log(_selectedDate.toString());
     }
   }
 

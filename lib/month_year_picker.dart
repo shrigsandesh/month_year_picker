@@ -23,6 +23,7 @@ class _PositionedMonthYearPicker extends StatefulWidget {
   final Color? backgroundColor;
   final bool barrierDismissible;
   final Color? headerBackgroundColor;
+  final Function(DateTime)? onDateChanged;
 
   const _PositionedMonthYearPicker({
     required this.buttonPosition,
@@ -42,6 +43,7 @@ class _PositionedMonthYearPicker extends StatefulWidget {
     this.backgroundColor,
     required this.barrierDismissible,
     this.headerBackgroundColor,
+    this.onDateChanged,
   });
 
   @override
@@ -82,6 +84,7 @@ class _PositionedMonthYearPickerState
 
   void _handleSelectionChanged(DateTime dateTime) {
     _currentSelection = dateTime;
+    widget.onDateChanged?.call(dateTime);
     setState(() {});
   }
 
@@ -174,6 +177,7 @@ class _PositionedMonthYearPickerState
                 backgroundColor: widget.backgroundColor,
                 headerBackgroundColor: widget.headerBackgroundColor,
                 onSelectionChanged: _handleSelectionChanged,
+                onDateChanged: widget.onDateChanged,
                 onCancel: _handleCancel,
                 onDone: _handleDone,
               ),
@@ -199,6 +203,7 @@ class MonthYearPicker extends StatefulWidget {
   final TextStyle? yearTextStyle;
   final Color? backgroundColor;
   final Function(DateTime)? onSelectionChanged;
+  final Function(DateTime)? onDateChanged;
   final VoidCallback? onCancel;
   final VoidCallback? onDone;
   final Color? headerBackgroundColor;
@@ -216,6 +221,7 @@ class MonthYearPicker extends StatefulWidget {
     this.yearTextStyle,
     this.backgroundColor,
     this.onSelectionChanged,
+    this.onDateChanged,
     this.onCancel,
     this.onDone,
     this.headerBackgroundColor,
@@ -347,7 +353,9 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
       _selectedYear = year;
     });
 
-    widget.onSelectionChanged?.call(DateTime(year, month.number));
+    final selectedDate = DateTime(year, month.number);
+    widget.onSelectionChanged?.call(selectedDate);
+    widget.onDateChanged?.call(selectedDate);
   }
 
   @override
@@ -506,6 +514,7 @@ class _PickerActions extends StatelessWidget {
 /// [monthTextStyle] - Text style for month text
 /// [yearTextStyle] - Text style for year text
 /// [backgroundColor] - Background color of the picker
+/// [onDateChanged] - Callback triggered when the selected date changes
 ///
 /// Returns `Future<DateTime>?` where:
 /// - `DateTime` if user selects a date and taps "Done"
@@ -526,6 +535,9 @@ class _PickerActions extends StatelessWidget {
 ///       buttonKey: buttonKey,
 ///       initialYear: 2024,
 ///       allowFutureDate: false,
+///       onDateChanged: (DateTime date) {
+///         print('Date changed to: ${date.month}/${date.year}');
+///       },
 ///     );
 ///     if (pickedDate != null) {
 ///       // Use pickedDate (DateTime)
@@ -553,6 +565,7 @@ Future<DateTime?> showMonthYearPicker({
   TextStyle? yearTextStyle,
   Color? backgroundColor,
   Color? headerBackgroundColor,
+  Function(DateTime)? onDateChanged,
 }) async {
   // Get button position and size
   final RenderBox? buttonRenderBox =
@@ -590,6 +603,7 @@ Future<DateTime?> showMonthYearPicker({
         backgroundColor: backgroundColor,
         barrierDismissible: barrierDismissible,
         headerBackgroundColor: headerBackgroundColor,
+        onDateChanged: onDateChanged,
       );
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
