@@ -22,6 +22,7 @@ class _PositionedMonthYearPicker extends StatefulWidget {
   final TextStyle? yearTextStyle;
   final Color? backgroundColor;
   final bool barrierDismissible;
+  final Color? headerBackgroundColor;
 
   const _PositionedMonthYearPicker({
     required this.buttonPosition,
@@ -40,6 +41,7 @@ class _PositionedMonthYearPicker extends StatefulWidget {
     this.yearTextStyle,
     this.backgroundColor,
     required this.barrierDismissible,
+    this.headerBackgroundColor,
   });
 
   @override
@@ -170,6 +172,7 @@ class _PositionedMonthYearPickerState
                 monthTextStyle: widget.monthTextStyle,
                 yearTextStyle: widget.yearTextStyle,
                 backgroundColor: widget.backgroundColor,
+                headerBackgroundColor: widget.headerBackgroundColor,
                 onSelectionChanged: _handleSelectionChanged,
                 onCancel: _handleCancel,
                 onDone: _handleDone,
@@ -549,6 +552,7 @@ Future<DateTime?> showMonthYearPicker({
   TextStyle? monthTextStyle,
   TextStyle? yearTextStyle,
   Color? backgroundColor,
+  Color? headerBackgroundColor,
 }) async {
   // Get button position and size
   final RenderBox? buttonRenderBox =
@@ -569,22 +573,24 @@ Future<DateTime?> showMonthYearPicker({
     barrierLabel: 'Month Year Picker',
     pageBuilder: (context, animation, secondaryAnimation) {
       return _PositionedMonthYearPicker(
-          buttonPosition: buttonPosition,
-          buttonSize: buttonSize,
-          initialMonth: initialMonth,
-          initialYear: initialYear,
-          allowFutureDate: allowFutureDate,
-          itemExtent: itemExtent,
-          pickerWidth: pickerWidth,
-          pickerHeight: pickerHeight,
-          maxYear: maxYear,
-          minYear: minYear,
-          headerBuilder: headerBuilder,
-          selectionColor: selectionColor,
-          monthTextStyle: monthTextStyle,
-          yearTextStyle: yearTextStyle,
-          backgroundColor: backgroundColor,
-          barrierDismissible: barrierDismissible);
+        buttonPosition: buttonPosition,
+        buttonSize: buttonSize,
+        initialMonth: initialMonth,
+        initialYear: initialYear,
+        allowFutureDate: allowFutureDate,
+        itemExtent: itemExtent,
+        pickerWidth: pickerWidth,
+        pickerHeight: pickerHeight,
+        maxYear: maxYear,
+        minYear: minYear,
+        headerBuilder: headerBuilder,
+        selectionColor: selectionColor,
+        monthTextStyle: monthTextStyle,
+        yearTextStyle: yearTextStyle,
+        backgroundColor: backgroundColor,
+        barrierDismissible: barrierDismissible,
+        headerBackgroundColor: headerBackgroundColor,
+      );
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return FadeTransition(
