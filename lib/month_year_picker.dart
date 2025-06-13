@@ -198,7 +198,7 @@ class MonthYearPicker extends StatefulWidget {
   final Function(DateTime)? onSelectionChanged;
   final VoidCallback? onCancel;
   final VoidCallback? onDone;
-
+  final Color? headerBackgroundColor;
   const MonthYearPicker({
     super.key,
     this.initialMonth,
@@ -215,6 +215,7 @@ class MonthYearPicker extends StatefulWidget {
     this.onSelectionChanged,
     this.onCancel,
     this.onDone,
+    this.headerBackgroundColor,
   })  : assert(
           initialMonth == null || (initialMonth >= 1 && initialMonth <= 12),
           'initialMonth must be between 1 and 12 if provided',
@@ -361,6 +362,7 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
         children: [
           widget.headerBuilder?.call(selectedDate) ??
               _PickerHeader(
+                backgroundColor: widget.headerBackgroundColor,
                 selectedMonth: _selectedMonth.name,
                 selectedYear: _selectedYear.toString(),
               ),
@@ -396,10 +398,12 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
 class _PickerHeader extends StatefulWidget {
   final String selectedMonth;
   final String selectedYear;
+  final Color? backgroundColor;
 
   const _PickerHeader({
     required this.selectedMonth,
     required this.selectedYear,
+    this.backgroundColor,
   });
 
   @override
@@ -411,8 +415,8 @@ class _PickerHeaderState extends State<_PickerHeader> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      decoration: const BoxDecoration(
-        color: CupertinoColors.link,
+      decoration: BoxDecoration(
+        color: widget.backgroundColor ?? CupertinoColors.link,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(PickerConstants.borderRadius),
           topRight: Radius.circular(PickerConstants.borderRadius),
