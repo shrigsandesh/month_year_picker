@@ -154,7 +154,8 @@ class _PositionedMonthYearPickerState
               decoration: BoxDecoration(
                 color:
                     widget.backgroundColor ?? CupertinoColors.systemBackground,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(PickerConstants.borderRadius),
                 boxShadow: [
                   BoxShadow(
                     color: CupertinoColors.black.withValues(alpha: 0.1),
