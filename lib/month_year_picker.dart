@@ -154,7 +154,8 @@ class _PositionedMonthYearPickerState
               decoration: BoxDecoration(
                 color:
                     widget.backgroundColor ?? CupertinoColors.systemBackground,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius:
+                    BorderRadius.circular(PickerConstants.borderRadius),
                 boxShadow: [
                   BoxShadow(
                     color: CupertinoColors.black.withValues(alpha: 0.1),
@@ -365,7 +366,7 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
     return Container(
       constraints: BoxConstraints(maxWidth: 200),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(PickerConstants.borderRadius),
         color: widget.backgroundColor ?? CupertinoColors.systemBackground,
       ),
       child: Column(
