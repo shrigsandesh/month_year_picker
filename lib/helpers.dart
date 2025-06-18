@@ -5,6 +5,7 @@ class PickerConstants {
   static const double itemExtent = 32.0;
   static const double pickerWidth = 216.0;
   static const double pickerHeight = 260.0;
+  static const double pickerBodyPadding = 4.0;
   static const double borderRadius = 14.0; // iOS standard radius
   static const double actionButtonHeight = 44.0; // iOS standard button height
 

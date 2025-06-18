@@ -23,6 +23,9 @@ class _PositionedMonthYearPicker extends StatefulWidget {
   final Color? backgroundColor;
   final bool barrierDismissible;
   final Color? headerBackgroundColor;
+  final Color? pickerBodyColor;
+  final EdgeInsets? pickerBodyPadding;
+  final Color? disabledTextColor;
   final Function(DateTime)? onDateChanged;
 
   const _PositionedMonthYearPicker({
@@ -44,6 +47,9 @@ class _PositionedMonthYearPicker extends StatefulWidget {
     required this.barrierDismissible,
     this.headerBackgroundColor,
     this.onDateChanged,
+    this.pickerBodyColor,
+    this.pickerBodyPadding,
+    this.disabledTextColor,
   });
 
   @override
@@ -177,10 +183,13 @@ class _PositionedMonthYearPickerState
                 yearTextStyle: widget.yearTextStyle,
                 backgroundColor: widget.backgroundColor,
                 headerBackgroundColor: widget.headerBackgroundColor,
+                pickerBodyColor: widget.pickerBodyColor,
                 onSelectionChanged: _handleSelectionChanged,
                 onDateChanged: widget.onDateChanged,
                 onCancel: _handleCancel,
                 onDone: _handleDone,
+                pickerBodyPadding: widget.pickerBodyPadding,
+                disabledTextColor: widget.disabledTextColor,
               ),
             ),
           ),
@@ -208,6 +217,9 @@ class MonthYearPicker extends StatefulWidget {
   final VoidCallback? onCancel;
   final VoidCallback? onDone;
   final Color? headerBackgroundColor;
+  final Color? pickerBodyColor;
+  final EdgeInsets? pickerBodyPadding;
+  final Color? disabledTextColor;
   const MonthYearPicker({
     super.key,
     this.initialMonth,
@@ -226,6 +238,9 @@ class MonthYearPicker extends StatefulWidget {
     this.onCancel,
     this.onDone,
     this.headerBackgroundColor,
+    this.pickerBodyColor,
+    this.pickerBodyPadding,
+    this.disabledTextColor,
   })  : assert(
           initialMonth == null || (initialMonth >= 1 && initialMonth <= 12),
           'initialMonth must be between 1 and 12 if provided',
@@ -378,24 +393,31 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
                 selectedMonth: _selectedMonth.name,
                 selectedYear: _selectedYear.toString(),
               ),
-          const SizedBox(height: 10),
-          _PickerBody(
-            itemExtent: widget.itemExtent,
-            selectedMonth: _selectedMonth,
-            selectedYear: _selectedYear,
-            yearList: _yearList,
-            allowFutureDate: widget.allowFutureDate,
-            nowYear: _now.year,
-            nowMonth: _now.month,
-            minYear: widget.minYear,
-            maxYear: widget.maxYear,
-            selectionColor: widget.selectionColor,
-            monthTextStyle: widget.monthTextStyle,
-            yearTextStyle: widget.yearTextStyle,
-            onMonthChanged: _handleMonthChanged,
-            onYearChanged: _handleYearChanged,
+          Expanded(
+            child: Container(
+              padding: widget.pickerBodyPadding ??
+                  EdgeInsets.symmetric(
+                      vertical: PickerConstants.pickerBodyPadding),
+              color: widget.pickerBodyColor,
+              child: _PickerBody(
+                itemExtent: widget.itemExtent,
+                selectedMonth: _selectedMonth,
+                selectedYear: _selectedYear,
+                yearList: _yearList,
+                allowFutureDate: widget.allowFutureDate,
+                nowYear: _now.year,
+                nowMonth: _now.month,
+                minYear: widget.minYear,
+                maxYear: widget.maxYear,
+                selectionColor: widget.selectionColor,
+                monthTextStyle: widget.monthTextStyle,
+                yearTextStyle: widget.yearTextStyle,
+                onMonthChanged: _handleMonthChanged,
+                onYearChanged: _handleYearChanged,
+                disabledTextColor: widget.disabledTextColor,
+              ),
+            ),
           ),
-          Spacer(),
           _PickerActions(
             onCancel: widget.onCancel ?? () {},
             onDone: widget.onDone ?? () {},
@@ -504,30 +526,38 @@ class _PickerActions extends StatelessWidget {
   }
 }
 
-/// Shows a month-year picker positioned above a button widget.
+/// Displays a month-year picker dialog positioned above the given button widget.
 ///
-/// [buttonKey] - GlobalKey of the button widget to position above
-/// [context] - BuildContext for the overlay
-/// [maxYear] - Maximum selectable year (optional)
-/// [minYear] - Minimum selectable year (optional)
-/// [headerBuilder] - Custom widget builder for header with selected date
-/// [selectionColor] - Color for the selection overlay
-/// [monthTextStyle] - Text style for month text
-/// [yearTextStyle] - Text style for year text
-/// [backgroundColor] - Background color of the picker
-/// [onDateChanged] - Callback triggered when the selected date changes
+/// Returns a [Future<DateTime?>] that completes with the selected date if "Done" is tapped,
+/// or `null` if the picker is cancelled or dismissed.
 ///
-/// Returns `Future<DateTime>?` where:
-/// - `DateTime` if user selects a date and taps "Done"
-/// - `null` if user cancels or dismisses the picker
+/// Parameters:
+/// - [context]: The [BuildContext] to show the dialog in.
+/// - [buttonKey]: The [GlobalKey] attached to the button widget to position the picker above.
+/// - [initialMonth]: The initially selected month (1-12). Defaults to current month.
+/// - [initialYear]: The initially selected year. Defaults to current year.
+/// - [allowFutureDate]: If false, disables selection of future months/years. Defaults to false.
+/// - [itemExtent]: Height of each picker item. Defaults to [PickerConstants.itemExtent].
+/// - [barrierColor]: The color of the modal barrier. Defaults to a semi-transparent black.
+/// - [barrierDismissible]: Whether tapping outside dismisses the picker. Defaults to false.
+/// - [pickerWidth]: Custom width for the picker dialog.
+/// - [pickerHeight]: Custom height for the picker dialog.
+/// - [maxYear]: Maximum selectable year (inclusive).
+/// - [minYear]: Minimum selectable year (inclusive).
+/// - [headerBuilder]: Optional builder for a custom header widget, given the selected date.
+/// - [selectionColor]: Color of the selection overlay.
+/// - [monthTextStyle]: Text style for month items.
+/// - [yearTextStyle]: Text style for year items.
+/// - [backgroundColor]: Background color of the picker dialog.
+/// - [headerBackgroundColor]: Background color of the header.
+/// - [pickerBodyColor]: Background color of the picker body.
+/// - [pickerBodyPadding]: Padding for the picker body.
+/// - [onDateChanged]: Callback triggered when the selected date changes.
 ///
-
 /// Example usage:
-///
 /// ```dart
 /// final GlobalKey buttonKey = GlobalKey();
 ///
-/// // Inside your widget's build method:
 /// ElevatedButton(
 ///   key: buttonKey,
 ///   onPressed: () async {
@@ -547,6 +577,7 @@ class _PickerActions extends StatelessWidget {
 ///   child: Text('Pick Month/Year'),
 /// )
 /// ```
+
 Future<DateTime?> showMonthYearPicker({
   required BuildContext context,
   required GlobalKey buttonKey,
@@ -566,6 +597,9 @@ Future<DateTime?> showMonthYearPicker({
   TextStyle? yearTextStyle,
   Color? backgroundColor,
   Color? headerBackgroundColor,
+  Color? pickerBodyColor,
+  EdgeInsets? pickerBodyPadding,
+  Color? disabledTextColor,
   Function(DateTime)? onDateChanged,
 }) async {
   // Get button position and size
@@ -605,6 +639,9 @@ Future<DateTime?> showMonthYearPicker({
         barrierDismissible: barrierDismissible,
         headerBackgroundColor: headerBackgroundColor,
         onDateChanged: onDateChanged,
+        pickerBodyColor: pickerBodyColor,
+        pickerBodyPadding: pickerBodyPadding,
+        disabledTextColor: disabledTextColor,
       );
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -641,9 +678,9 @@ class _PickerBody extends StatefulWidget {
   final TextStyle? yearTextStyle;
   final ValueChanged<int> onMonthChanged;
   final ValueChanged<int> onYearChanged;
+  final Color? disabledTextColor;
 
   const _PickerBody({
-    super.key,
     required this.itemExtent,
     required this.selectedMonth,
     required this.selectedYear,
@@ -658,6 +695,7 @@ class _PickerBody extends StatefulWidget {
     this.yearTextStyle,
     required this.onMonthChanged,
     required this.onYearChanged,
+    this.disabledTextColor,
   });
 
   @override
@@ -804,7 +842,7 @@ class _PickerBodyState extends State<_PickerBody> {
             style: (widget.monthTextStyle ?? const TextStyle(fontSize: 18))
                 .copyWith(
               color: isDisabled
-                  ? CupertinoColors.inactiveGray
+                  ? widget.disabledTextColor ?? CupertinoColors.inactiveGray
                   : widget.monthTextStyle?.color ?? CupertinoColors.label,
             ),
           ),
@@ -842,7 +880,7 @@ class _PickerBodyState extends State<_PickerBody> {
             style: (widget.yearTextStyle ?? const TextStyle(fontSize: 18))
                 .copyWith(
               color: isDisabled
-                  ? CupertinoColors.inactiveGray
+                  ? widget.disabledTextColor ?? CupertinoColors.inactiveGray
                   : widget.yearTextStyle?.color ?? CupertinoColors.label,
             ),
           ),
