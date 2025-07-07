@@ -41,7 +41,7 @@ class _ExampleUsageState extends State<ExampleUsage> {
       context: context,
       buttonKey: _buttonKey,
       initialMonth: _selectedDate?.month,
-      allowFutureDate: false,
+      allowFutureDate: true,
       initialYear: _selectedDate?.year,
       minYear: 1920,
       maxYear: 2025,
@@ -55,6 +55,8 @@ class _ExampleUsageState extends State<ExampleUsage> {
         _selectedDate = result;
       });
     }
+
+    log('Selected Date: ${_selectedDate?.toIso8601String() ?? 'None'}');
   }
 
   @override

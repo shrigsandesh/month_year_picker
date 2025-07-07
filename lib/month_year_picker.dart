@@ -27,6 +27,8 @@ class _PositionedMonthYearPicker extends StatefulWidget {
   final EdgeInsets? pickerBodyPadding;
   final Color? disabledTextColor;
   final Function(DateTime)? onDateChanged;
+  final TextStyle? cancelTextStyle;
+  final TextStyle? doneTextStyle;
 
   const _PositionedMonthYearPicker({
     required this.buttonPosition,
@@ -50,6 +52,8 @@ class _PositionedMonthYearPicker extends StatefulWidget {
     this.pickerBodyColor,
     this.pickerBodyPadding,
     this.disabledTextColor,
+    this.cancelTextStyle,
+    this.doneTextStyle,
   });
 
   @override
@@ -190,6 +194,8 @@ class _PositionedMonthYearPickerState
                 onDone: _handleDone,
                 pickerBodyPadding: widget.pickerBodyPadding,
                 disabledTextColor: widget.disabledTextColor,
+                cancelTextStyle: widget.cancelTextStyle,
+                doneTextStyle: widget.doneTextStyle,
               ),
             ),
           ),
@@ -220,6 +226,8 @@ class MonthYearPicker extends StatefulWidget {
   final Color? pickerBodyColor;
   final EdgeInsets? pickerBodyPadding;
   final Color? disabledTextColor;
+  final TextStyle? cancelTextStyle;
+  final TextStyle? doneTextStyle;
   const MonthYearPicker({
     super.key,
     this.initialMonth,
@@ -241,6 +249,8 @@ class MonthYearPicker extends StatefulWidget {
     this.pickerBodyColor,
     this.pickerBodyPadding,
     this.disabledTextColor,
+    this.cancelTextStyle,
+    this.doneTextStyle,
   })  : assert(
           initialMonth == null || (initialMonth >= 1 && initialMonth <= 12),
           'initialMonth must be between 1 and 12 if provided',
@@ -421,6 +431,8 @@ class _MonthYearPickerState extends State<MonthYearPicker> {
           _PickerActions(
             onCancel: widget.onCancel ?? () {},
             onDone: widget.onDone ?? () {},
+            cancelTextStyle: widget.cancelTextStyle,
+            doneTextStyle: widget.doneTextStyle,
           ),
         ],
       ),
@@ -477,9 +489,14 @@ class _PickerActions extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onDone;
 
+  final TextStyle? cancelTextStyle;
+  final TextStyle? doneTextStyle;
+
   const _PickerActions({
     required this.onCancel,
     required this.onDone,
+    this.cancelTextStyle,
+    this.doneTextStyle,
   });
 
   @override
@@ -499,9 +516,10 @@ class _PickerActions extends StatelessWidget {
               child: CupertinoButton(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 onPressed: onCancel,
-                child: const Text(
+                child: Text(
                   'Cancel',
-                  style: TextStyle(color: CupertinoColors.destructiveRed),
+                  style: cancelTextStyle ??
+                      TextStyle(color: CupertinoColors.destructiveRed),
                 ),
               ),
             ),
@@ -511,11 +529,12 @@ class _PickerActions extends StatelessWidget {
             ),
             Expanded(
               child: CupertinoButton(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 12),
                 onPressed: onDone,
-                child: const Text(
+                child: Text(
                   'Done',
-                  style: TextStyle(color: CupertinoColors.activeBlue),
+                  style: doneTextStyle ??
+                      TextStyle(color: CupertinoColors.activeBlue),
                 ),
               ),
             ),
@@ -548,6 +567,8 @@ class _PickerActions extends StatelessWidget {
 /// - [selectionColor]: Color of the selection overlay.
 /// - [monthTextStyle]: Text style for month items.
 /// - [yearTextStyle]: Text style for year items.
+/// - [cancelTextStyle]: Text style for cancel.
+/// - [doneTextStyle]: Text style for done text.
 /// - [backgroundColor]: Background color of the picker dialog.
 /// - [headerBackgroundColor]: Background color of the header.
 /// - [pickerBodyColor]: Background color of the picker body.
@@ -595,6 +616,8 @@ Future<DateTime?> showMonthYearPicker({
   Color? selectionColor,
   TextStyle? monthTextStyle,
   TextStyle? yearTextStyle,
+  TextStyle? cancelTextStyle,
+  TextStyle? doneTextStyle,
   Color? backgroundColor,
   Color? headerBackgroundColor,
   Color? pickerBodyColor,
@@ -642,6 +665,8 @@ Future<DateTime?> showMonthYearPicker({
         pickerBodyColor: pickerBodyColor,
         pickerBodyPadding: pickerBodyPadding,
         disabledTextColor: disabledTextColor,
+        cancelTextStyle: cancelTextStyle,
+        doneTextStyle: doneTextStyle,
       );
     },
     transitionBuilder: (context, animation, secondaryAnimation, child) {
